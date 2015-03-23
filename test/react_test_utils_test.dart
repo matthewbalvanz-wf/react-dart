@@ -27,8 +27,7 @@ void main() {
     proto['render'] = () => null;
     proto['setState'] = () => null;
 
-    var props = new JsObject(_Object);
-    properties.forEach((k, v) => props[k] = v);
+    var props = new JsObject.jsify(properties);
 
     var renderedChildren;
     if (childrenComponents.length > 0) {
