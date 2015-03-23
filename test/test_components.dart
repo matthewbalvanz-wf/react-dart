@@ -46,12 +46,14 @@ class EventComponent extends Component {
 }
 var eventComponent = registerComponent(() => new EventComponent());
 
-
 class SampleComponent extends Component {
   render() => div({}, [
-    h1({}, 'A header'),
-    div({}, 'First div'),
-    div({}, 'Second div')
+      h1({}, 'A header'),
+      div({'className': 'div1'}, 'First div'),
+      div({}, 'Second div'),
+      span({'className': 'span1'})
   ]);
 }
+
 var sampleComponent = registerComponent(() => new SampleComponent());
+

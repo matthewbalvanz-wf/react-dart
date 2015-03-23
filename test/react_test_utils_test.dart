@@ -2,6 +2,7 @@ import 'dart:js';
 
 import 'package:unittest/unittest.dart';
 import 'package:unittest/html_config.dart';
+import 'package:react/react.dart';
 import 'package:react/react_client.dart' as reactClient;
 import 'package:react/react_test_utils.dart';
 
@@ -15,6 +16,38 @@ void main() {
 
   var component;
   var domNode;
+  var _React = context['React'];
+  var _Object = context['Object'];
+
+  // This is intended only to make a simple representation of react elements
+  // as JS objects for testings purposes.
+  JsObject createReactElement(
+      String componentType, Map properties, List childrenComponents) {
+    var proto = new JsObject(_Object);
+    proto['render'] = () => null;
+    proto['setState'] = () => null;
+
+    var props = new JsObject(_Object);
+    properties.forEach((k, v) => props[k] = v);
+
+    var renderedChildren;
+    if (childrenComponents.length > 0) {
+      renderedChildren = new JsObject(_Object);
+      for (var i = 0; i < childrenComponents.length; i++) {
+        renderedChildren['.${i}'] = childrenComponents[i];
+      }
+    }
+
+    var component = new JsObject(_Object);
+    component['constructor'] = componentType.toLowerCase();
+    component['mountComponent'] = () => null;
+    component['props'] = props;
+    component['tagName'] = componentType.toUpperCase();
+    component['__proto__'] = proto;
+    component['_renderedChildren'] = renderedChildren;
+
+    return component;
+  };
 
   void testEvent(Function event) {
     component = renderIntoDocument(eventComponent({}));
@@ -64,17 +97,42 @@ void main() {
     test('wheel', () => testEvent(Simulate.wheel));
   });
 
-  test('findAllInRenderedTree', () {
+//  test('findAllInRenderedTree', () {
+//    var divChild1 = createReactElement('div', []);
+//    var divChild2 = createReactElement('div', []);
+//    var divChild3 = createReactElement('div', []);
+//    var spanChild1 = createReactElement('span', []);
+//    var component = createReactElement(
+//        'div', [divChild1, divChild2, divChild3, spanChild1]);
+//
+//    var jsFunc = new JsFunction.withThis((c) => c.tagName == 'DIV');
+//
+//    var results = findAllInRenderedTree(component, jsFunc);
+//    expect(results.length, equals(2));
+//  });
+
+  test('findRenderedDOMComponentWithClass', () {
     component = renderIntoDocument(sampleComponent({}));
-    var jsFunc = new JsFunction.withThis((c) => c.tagName == 'div');
-    var results = findAllInRenderedTree(component, jsFunc);
-    expect(results.length, equals(2));
+    var spanComponent = findRenderedDOMComponentWithClass(component, 'span1');
+    expect(spanComponent['tagName'], equals('SPAN'));
   });
-  
+
   test('findRenderedDOMComponentWithTag', () {
     component = renderIntoDocument(sampleComponent({}));
-    var h1 = findRenderedDOMComponentWithTag(component, 'h1');
-    expect(h1['tagName'], equals('H1'));
+    var h1Component = findRenderedDOMComponentWithTag(component, 'h1');
+    expect(h1Component['tagName'], equals('H1'));
+  });
+
+
+  test('findRenderedComponentWithType', () {
+    var type = new JsObject(_Object);
+    type['type'] = 'span';
+
+    var divChild = createReactElement('div', {}, []);
+    var spanChild = createReactElement('span', {}, []);
+    var component = createReactElement('div', {}, [divChild, spanChild]);
+
+    expect(findRenderedComponentWithType(component, type), spanChild);
   });
 
   group('isCompositeComponent', () {
@@ -87,16 +145,158 @@ void main() {
     test('returns false when element is not a React component', () {
       expect(isCompositeComponent(eventComponent), isFalse);
     });
-
   });
 
-  // TODO: isCompositeComponentWithClass
-  // TODO: isDOMComponent
-  // TODO: isElement
-  // TODO: isElementOfType
-  // TODO: isTextComponent
-  // TODO: scryRenderedDOMComponentsWithClass
-  // TODO: renderIntoDocument
-  // TODO: getDomNode
+  group('isCompositeComponentWithType', () {
+    var proto = new JsObject(_Object);
+    proto['render'] = () => null;
+    proto['setState'] = () => null;
 
+    var divType = new JsObject(_Object);
+    divType['type'] = 'div';
+
+    var spanType = new JsObject(_Object);
+    spanType['type'] = 'span';
+
+    var compositeComponent = new JsObject(_Object);
+    compositeComponent['constructor'] = divType['type'];
+    compositeComponent['__proto__'] = proto;
+
+    test('returns true when element is a React component with class', () {
+      expect(isCompositeComponentWithType(
+          compositeComponent, divType), isTrue);
+    });
+
+    test('returns false when element is not a React component with class', () {
+      expect(isCompositeComponentWithType(
+          compositeComponent, spanType), isFalse);
+    });
+  });
+
+  group('isDOMComponent', () {
+    test('returns true when argument is a DOM component', () {
+      component = renderIntoDocument(sampleComponent({}));
+      var h1Element = findRenderedDOMComponentWithTag(component, 'h1');
+      expect(isDOMComponent(h1Element), isTrue);
+    });
+
+    test('returns false when argument is not a DOM component', () {
+      expect(isDOMComponent(h1({})), isFalse);
+    });
+  });
+
+  group('isElement', () {
+    test('returns true argument is an element', () {
+      expect(isElement(div({})), isTrue);
+    });
+
+    test('returns false argument is not an element', () {
+      expect(isElement(sampleComponent), isFalse);
+    });
+  });
+
+  group('isElementOfType', () {
+    var proto = new JsObject(_Object);
+    proto['_isReactElement'] = true;
+
+    var divType = new JsObject(_Object);
+    divType['type'] = 'div';
+
+    var spanType = new JsObject(_Object);
+    spanType['type'] = 'span';
+
+    var divElement = new JsObject(_Object);
+    divElement['type'] = 'div';
+    divElement['__proto__'] = proto;
+
+    test('returns true argument is an element of type', () {
+      expect(isElementOfType(divElement, divType), isTrue);
+    });
+
+    test('returns false argument is not an element of type', () {
+      expect(isElementOfType(divElement, spanType), isFalse);
+    });
+  });
+
+//  group('isTextComponent', () {
+//    var proto = new JsObject(_Object);
+//    proto['_isReactElement'] = true;
+//
+//    var type = () => null;
+//
+//    var textComponent = new JsObject(_Object);
+//    textComponent['type'] = type;
+//
+//    test('returns true when argument is a text component', () {
+//      expect(isTextComponent(textComponent), isTrue);
+//    });
+//
+//    test('returns false when argument is not a text component', () {
+//      expect(isTextComponent(textComponent), isFalse);
+//    });
+//  });
+
+  test('scryRenderedComponentsWithType', () {
+    var type = new JsObject(_Object);
+    type['type'] = 'div';
+
+    var divChild = createReactElement('div', {}, []);
+    var spanChild = createReactElement('span', {}, []);
+    var component = createReactElement('div', {}, [divChild, spanChild]);
+
+    var results = scryRenderedComponentsWithType(component, type);
+    expect(results.length, 2);
+    expect(results[0]['tagName'], equals('DIV'));
+    expect(results[1]['tagName'], equals('DIV'));
+  });
+
+  test('scryRenderedDOMComponentsWithClass', () {
+    var divChild = createReactElement('div', {'className': 'class1'}, []);
+    var spanChild = createReactElement('span', {'className': 'class1'}, []);
+    var component = createReactElement(
+        'div', {'className': 'class2'}, [divChild, spanChild]);
+
+    var results = scryRenderedDOMComponentsWithClass(component, 'class1');
+    expect(results.length, 2);
+    expect(results[0]['tagName'], equals('DIV'));
+    expect(results[1]['tagName'], equals('SPAN'));
+  });
+
+  test('scryRenderedDOMComponentsWithTag', () {
+    var divChild = createReactElement('div', {}, []);
+    var spanChild = createReactElement('span', {}, []);
+    var component = createReactElement(
+        'div', {'className': 'class2'}, [divChild, spanChild]);
+
+    var results = scryRenderedDOMComponentsWithTag(component, 'div');
+    expect(results.length, 2);
+    expect(results[0]['tagName'], equals('DIV'));
+    expect(results[1]['tagName'], equals('DIV'));
+  });
+
+  test('renderIntoDocucment', () {
+    var component = renderIntoDocument(sampleComponent({}));
+    var divElements = scryRenderedDOMComponentsWithTag(component, 'div');
+    var h1Elements = scryRenderedDOMComponentsWithTag(component, 'h1');
+    var spanElements = scryRenderedDOMComponentsWithTag(component, 'span');
+
+    expect(divElements.length, equals(3));
+    // First div should be the parent div created by renderIntoDocument()
+    expect(getDomNode(
+        divElements[0]).text, equals('A headerFirst divSecond div'));
+    expect(getDomNode(divElements[1]).text, equals('First div'));
+    expect(getDomNode(divElements[2]).text, equals('Second div'));
+    expect(h1Elements.length, equals(1));
+    expect(getDomNode(h1Elements[0]).text, equals('A header'));
+    expect(spanElements.length, equals(1));
+    expect(getDomNode(spanElements[0]).text, equals(''));
+  });
+
+  test('getDOMNode', () {
+    component = renderIntoDocument(sampleComponent({}));
+    var h1Element = findRenderedDOMComponentWithTag(component, 'h1');
+    var h1DomNode = getDomNode(h1Element);
+    expect(h1DomNode.nodeName, 'H1');
+    expect(h1DomNode.text, 'A header');
+  });
 }
