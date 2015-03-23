@@ -209,10 +209,6 @@ JsObject scryRenderedDOMComponentsWithTag(JsObject root, String tagName) {
       'scryRenderedDOMComponentsWithTag', [root, tagName]);
 }
 
-
-// TODO: continue making methods from this point
-
-
 /// Render a Component into a detached DOM node in the document.
 JsObject renderIntoDocument(Component instance) {
   var div = new DivElement();
@@ -221,4 +217,11 @@ JsObject renderIntoDocument(Component instance) {
 
 Element getDomNode(JsObject object) => object.callMethod('getDOMNode', []);
 
-// TODO: mockComponent
+/// Pass a mocked component module to this method to augment it with useful
+/// methods that allow it to be used as a dummy React component. Instead of
+/// rendering as usual, the component will become a simple <div> (or other tag
+/// if mockTagName is provided) containing any provided children.
+JsObject mockComponent(JsObject module, String mockTagName) {
+  return _TestUtils.callMethod(
+      'mockComponent', [module, mockTagName]);
+}

@@ -97,20 +97,6 @@ void main() {
     test('wheel', () => testEvent(Simulate.wheel));
   });
 
-//  test('findAllInRenderedTree', () {
-//    var divChild1 = createReactElement('div', []);
-//    var divChild2 = createReactElement('div', []);
-//    var divChild3 = createReactElement('div', []);
-//    var spanChild1 = createReactElement('span', []);
-//    var component = createReactElement(
-//        'div', [divChild1, divChild2, divChild3, spanChild1]);
-//
-//    var jsFunc = new JsFunction.withThis((c) => c.tagName == 'DIV');
-//
-//    var results = findAllInRenderedTree(component, jsFunc);
-//    expect(results.length, equals(2));
-//  });
-
   test('findRenderedDOMComponentWithClass', () {
     component = renderIntoDocument(sampleComponent({}));
     var spanComponent = findRenderedDOMComponentWithClass(component, 'span1');
@@ -217,24 +203,6 @@ void main() {
       expect(isElementOfType(divElement, spanType), isFalse);
     });
   });
-
-//  group('isTextComponent', () {
-//    var proto = new JsObject(_Object);
-//    proto['_isReactElement'] = true;
-//
-//    var type = () => null;
-//
-//    var textComponent = new JsObject(_Object);
-//    textComponent['type'] = type;
-//
-//    test('returns true when argument is a text component', () {
-//      expect(isTextComponent(textComponent), isTrue);
-//    });
-//
-//    test('returns false when argument is not a text component', () {
-//      expect(isTextComponent(textComponent), isFalse);
-//    });
-//  });
 
   test('scryRenderedComponentsWithType', () {
     var type = new JsObject(_Object);
