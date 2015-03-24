@@ -155,4 +155,4 @@ class MyComponent extends Component {
 
 ## Testing using React Test Utilities
 
-For more robust example take a look at [test/react_test_utils_test.dart](/tree/master/test).
+For more robust example take a look at [test/react_test_utils_test.dart](test).
