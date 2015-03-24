@@ -1,5 +1,4 @@
-#Using [React Test Utilities](http://facebook.github.io/react/docs/test-utils.html)
-
+##Test Dart wrapper for ReactUtils library
 
 To run React Test Utils tests:
 - run 'pub serve'
