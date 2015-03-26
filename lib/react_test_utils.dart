@@ -200,7 +200,7 @@ bool isCompositeComponentWithType(
 }
 
 /// Returns true if instance is a DOM component (such as a <div> or <span>).
-bool isDOMComponent(Element instance) {
+bool isDOMComponent(JsObject instance) {
   return _TestUtils.callMethod('isDOMComponent', [instance]);
 }
 
