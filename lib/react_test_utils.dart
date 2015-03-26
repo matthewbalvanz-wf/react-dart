@@ -1,13 +1,43 @@
 library react.test_utils;
 
+import 'dart:js';
 import 'dart:html';
 import 'package:react/react.dart';
-import 'dart:js';
+import "package:react/react_client.dart" show
+    ReactComponentFactory, ReactComponentFactoryProxy, ReactDOMProxy;
 
 
-JsObject _TestUtils = context['React']['addons']['TestUtils'];
+const missingAddonsMessage = 'React.addons.TestUtils not found. Ensure you\'ve '
+    'included the React addons in your HTML file.'
+    '\n  This:\n<script src="packages/react/react-with-addons.js"></script>'
+    '\n  Not this:\n<script src="packages/react/react.js"></script>';
+
+JsObject _TestUtils = _getNestedJsObject(
+    context, ['React', 'addons', 'TestUtils'], missingAddonsMessage);
+
 JsObject _Simulate = _TestUtils['Simulate'];
 
+_getNestedJsObject(
+    JsObject base, List<String> keys, [String errorIfNotFound='']) {
+  JsObject object = base;
+  for (String key in keys) {
+    if (!object.hasProperty(key)) {
+      throw 'Unable to resolve '
+          '$key in $base${keys.join('.')}}.\n$errorIfNotFound';
+    }
+    object = object[key];
+  }
+  return object;
+}
+
+JsFunction getFactory(component) {
+  if (component is ReactComponentFactoryProxy) {
+    return (component as ReactComponentFactoryProxy).reactComponentFactory;
+  }
+  return null;
+}
+
+typedef bool ComponentTestFunction(JsObject componentInstance);
 
 /// Event simulation interface.
 ///
@@ -126,50 +156,52 @@ class Simulate {
 /// used as a primitive for other test utils
 ///
 /// Included in Dart for completeness
-List findAllInRenderedTree(JsObject inst, JsFunction test) {
-  return _TestUtils.callMethod('findAllInRenderedTree', [inst, test]);
+List findAllInRenderedTree(JsObject tree, ReactComponentFactory test) {
+  return _TestUtils.callMethod('findAllInRenderedTree', [tree, test]);
 }
 
 /// Like scryRenderedDOMComponentsWithClass() but expects there to be one
 /// result, and returns that one result, or throws exception if there is
 /// any other number of matches besides one.
-JsObject findRenderedDOMComponentWithClass(JsObject root, String className) {
+JsObject findRenderedDOMComponentWithClass(JsObject tree, String className) {
   return _TestUtils.callMethod(
-      'findRenderedDOMComponentWithClass', [root, className]);
+      'findRenderedDOMComponentWithClass', [tree, className]);
 }
 
 /// Like scryRenderedDOMComponentsWithTag() but expects there to be one result,
 /// and returns that one result, or throws exception if there is any other
 /// number of matches besides one.
-JsObject findRenderedDOMComponentWithTag(JsObject element, String tag) {
+JsObject findRenderedDOMComponentWithTag(JsObject tree, String tag) {
   return _TestUtils.callMethod(
-      'findRenderedDOMComponentWithTag', [element, tag]);
+      'findRenderedDOMComponentWithTag', [tree, tag]);
 }
 
 /// Same as scryRenderedComponentsWithType() but expects there to be one result
 /// and returns that one result, or throws exception if there is any other
 /// number of matches besides one.
-JsObject findRenderedComponentWithType(JsObject root, JsObject componentType) {
+JsObject findRenderedComponentWithType(
+    JsObject tree, ReactComponentFactory componentType) {
   return _TestUtils.callMethod(
-      'findRenderedComponentWithType', [root, componentType]);
+      'findRenderedComponentWithType', [tree, getFactory(componentType)]);
 }
 
 /// Returns true if element is a composite component.
 /// (created with React.createClass()).
-bool isCompositeComponent(JsObject element) {
-  return _TestUtils.callMethod('isCompositeComponent', [element]);
+bool isCompositeComponent(JsObject instance) {
+  return _TestUtils.callMethod('isCompositeComponent', [instance]);
 }
 
 /// Returns true if instance is a composite component.
 /// (created with React.createClass()) whose type is of a React componentClass.
-bool isCompositeComponentWithType(JsObject element, JsFunction componentClass) {
+bool isCompositeComponentWithType(
+    JsObject instance, ReactComponentFactory componentClass) {
   return _TestUtils.callMethod(
-      'isCompositeComponentWithType', [element, componentClass]);
+      'isCompositeComponentWithType', [instance, getFactory(componentClass)]);
 }
 
 /// Returns true if instance is a DOM component (such as a <div> or <span>).
-bool isDOMComponent(Element element) {
-  return _TestUtils.callMethod('isDOMComponent', [element]);
+bool isDOMComponent(Element instance) {
+  return _TestUtils.callMethod('isDOMComponent', [instance]);
 }
 
 /// Returns true if element is any ReactElement.
@@ -179,32 +211,34 @@ bool isElement(element) {
 
 /// Returns true if element is a ReactElement whose type is of a
 /// React componentClass.
-bool isElementOfType(JsObject element, JsFunction componentClass) {
-  return _TestUtils.callMethod('isElementOfType', [element, componentClass]);
+bool isElementOfType(JsObject element, ReactComponentFactory componentClass) {
+  return _TestUtils.callMethod(
+      'isElementOfType', [element, getFactory(componentClass)]);
 }
 
 /// Finds all instances of components with type equal to componentClass.
-JsObject scryRenderedComponentsWithType(JsObject root, JsObject componentType) {
+JsObject scryRenderedComponentsWithType(
+    JsObject tree, ReactComponentFactory componentClass) {
   return _TestUtils.callMethod(
-      'scryRenderedComponentsWithType', [root, componentType]);
+      'scryRenderedComponentsWithType', [tree, getFactory(componentClass)]);
 }
 
 /// Finds all instances of components in the rendered tree that are DOM
 /// components with the class name matching className.
-List scryRenderedDOMComponentsWithClass(JsObject root, String className) {
+List scryRenderedDOMComponentsWithClass(JsObject tree, String className) {
   return _TestUtils.callMethod(
-      'scryRenderedDOMComponentsWithClass', [root, className]);
+      'scryRenderedDOMComponentsWithClass', [tree, className]);
 }
 
 /// Finds all instances of components in the rendered tree that are DOM
 /// components with the tag name matching tagName.
-JsObject scryRenderedDOMComponentsWithTag(JsObject root, String tagName) {
+JsObject scryRenderedDOMComponentsWithTag(JsObject tree, String tagName) {
   return _TestUtils.callMethod(
-      'scryRenderedDOMComponentsWithTag', [root, tagName]);
+      'scryRenderedDOMComponentsWithTag', [tree, tagName]);
 }
 
 /// Render a Component into a detached DOM node in the document.
-JsObject renderIntoDocument(Component instance) {
+JsObject renderIntoDocument(JsObject instance) {
   var div = new DivElement();
   return _TestUtils.callMethod('renderIntoDocument', [instance, div]);
 }
@@ -215,7 +249,7 @@ Element getDomNode(JsObject object) => object.callMethod('getDOMNode', []);
 /// methods that allow it to be used as a dummy React component. Instead of
 /// rendering as usual, the component will become a simple <div> (or other tag
 /// if mockTagName is provided) containing any provided children.
-JsObject mockComponent(JsObject module, String mockTagName) {
+JsObject mockComponent(JsObject componentClass, String mockTagName) {
   return _TestUtils.callMethod(
-      'mockComponent', [module, mockTagName]);
+      'mockComponent', [componentClass, mockTagName]);
 }
