@@ -179,9 +179,10 @@ var myTestComponent = react.registerComponent(() => new MyTestComponent());
 
 void main() {
   reactClient.setClientConfiguration();
-  var component = reactTestUtils.renderIntoDocument(myTestComponent({}));
 
   test('should click button and set span text to "success"', () {
+    var component = reactTestUtils.renderIntoDocument(myTestComponent({}));
+
     // Find button using tag name
     var buttonElement = reactTestUtils.findRenderedDOMComponentWithTag(
         component, 'button');
