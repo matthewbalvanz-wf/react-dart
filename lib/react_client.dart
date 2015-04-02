@@ -42,7 +42,7 @@ typedef JsObject ReactComponentFactory(Map props, [dynamic children]);
 typedef Component ComponentFactory();
 
 class ReactComponentFactoryProxy implements Function {
-  final Function _call;
+  final ReactComponentFactory _call;
   final JsFunction reactComponentFactory;
   ReactComponentFactoryProxy(this.reactComponentFactory, this._call);
 
@@ -244,7 +244,7 @@ ReactComponentFactory _registerComponent(ComponentFactory componentFactory, [Ite
     )])
   ]);
 
-  var _call = (Map props, [dynamic children]) {
+  var call = (Map props, [dynamic children]) {
     if (children == null) {
       children = [];
     } else if (children is! Iterable) {
@@ -277,7 +277,7 @@ ReactComponentFactory _registerComponent(ComponentFactory componentFactory, [Ite
   /**
    * return ReactComponentFactory which produce react component with set props and children[s]
    */
-  return new ReactComponentFactoryProxy(reactComponentFactory, _call);
+  return new ReactComponentFactoryProxy(reactComponentFactory, call);
 }
 
 
@@ -285,7 +285,7 @@ ReactComponentFactory _registerComponent(ComponentFactory componentFactory, [Ite
  * create dart-react registered component for html tag.
  */
 _reactDom(String name) {
-  var _call = (Map props, [dynamic children]) {
+  var call = (Map props, [dynamic children]) {
     _convertBoundValues(props);
     _convertEventHandlers(props);
     if (props.containsKey('style')) {
@@ -297,7 +297,7 @@ _reactDom(String name) {
     return _React['createElement'].apply([name, newJsMap(props), children]);
   };
 
-  return new ReactComponentFactoryProxy(context['React']['DOM'][name], _call);
+  return new ReactComponentFactoryProxy(_React['DOM'][name], call);
 }
 
 /**

@@ -134,7 +134,7 @@ void main() {
     });
 
     test('returns false argument is not an element', () {
-      expect(isElement(sampleComponent), isFalse);
+      expect(isElement(div), isFalse);
     });
   });
 
@@ -184,7 +184,7 @@ void main() {
     expect(results[2]['tagName'], equals('DIV'));
   });
 
-  test('renderIntoDocucment', () {
+  test('renderIntoDocument', () {
     var reactComponent = renderIntoDocument(sampleComponent({}));
     var divElements = scryRenderedDOMComponentsWithTag(reactComponent, 'div');
     var h1Elements = scryRenderedDOMComponentsWithTag(reactComponent, 'h1');

@@ -23,7 +23,7 @@ _getNestedJsObject(
   for (String key in keys) {
     if (!object.hasProperty(key)) {
       throw 'Unable to resolve '
-          '$key in $base${keys.join('.')}}.\n$errorIfNotFound';
+          '$key in $base.${keys.join('.')}}.\n$errorIfNotFound';
     }
     object = object[key];
   }
@@ -156,7 +156,7 @@ class Simulate {
 /// used as a primitive for other test utils
 ///
 /// Included in Dart for completeness
-List findAllInRenderedTree(JsObject tree, ReactComponentFactory test) {
+List findAllInRenderedTree(JsObject tree, JsFunction test) {
   return _TestUtils.callMethod('findAllInRenderedTree', [tree, test]);
 }
 
@@ -205,7 +205,7 @@ bool isDOMComponent(JsObject instance) {
 }
 
 /// Returns true if element is any ReactElement.
-bool isElement(element) {
+bool isElement(JsObject element) {
   return _TestUtils.callMethod('isElement', [element]);
 }
 
@@ -240,7 +240,7 @@ JsObject scryRenderedDOMComponentsWithTag(JsObject tree, String tagName) {
 /// Render a Component into a detached DOM node in the document.
 JsObject renderIntoDocument(JsObject instance) {
   var div = new DivElement();
-  return _TestUtils.callMethod('renderIntoDocument', [instance, div]);
+  return _TestUtils.callMethod('renderIntoDocument', [instance]);
 }
 
 Element getDomNode(JsObject object) => object.callMethod('getDOMNode', []);
