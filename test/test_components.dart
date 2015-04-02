@@ -5,7 +5,7 @@ import 'package:react/react_client.dart' show ReactComponentFactory;
 /// Base component for event handling classes used in test cases.
 class EventComponent extends Component {
   getInitialState() => {'text': ''};
-  onEvent(SyntheticEvent e) => setState({'text': 'success'});
+  onEvent(SyntheticEvent e) => setState({'text': '${e.type} ${e.timeStamp}'});
   render() => div(
       {
           'onBlur': onEvent,
