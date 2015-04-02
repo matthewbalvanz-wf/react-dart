@@ -3,8 +3,7 @@ library react.test_utils;
 import 'dart:js';
 import 'dart:html';
 import 'package:react/react.dart';
-import "package:react/react_client.dart" show
-    ReactComponentFactory, ReactComponentFactoryProxy, ReactDOMProxy;
+import "package:react/react_client.dart";
 
 
 const missingAddonsMessage = 'React.addons.TestUtils not found. Ensure you\'ve '
@@ -51,103 +50,103 @@ typedef bool ComponentTestFunction(JsObject componentInstance);
 class Simulate {
 
   static blur(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('blur', [element, eventData]);
+      _Simulate.callMethod('blur', [element, new JsObject.jsify(eventData)]);
 
   static change(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('change', [element, eventData]);
+      _Simulate.callMethod('change', [element, new JsObject.jsify(eventData)]);
 
   static click(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('click', [element, eventData]);
+      _Simulate.callMethod('click', [element, new JsObject.jsify(eventData)]);
       
   static contextMenu(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('contextMenu', [element, eventData]);
+      _Simulate.callMethod('contextMenu', [element, new JsObject.jsify(eventData)]);
       
   static copy(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('copy', [element, eventData]);
+      _Simulate.callMethod('copy', [element, new JsObject.jsify(eventData)]);
       
   static cut(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('cut', [element, eventData]);
+      _Simulate.callMethod('cut', [element, new JsObject.jsify(eventData)]);
       
   static doubleClick(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('doubleClick', [element, eventData]);
+      _Simulate.callMethod('doubleClick', [element, new JsObject.jsify(eventData)]);
       
   static drag(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('drag', [element, eventData]);
+      _Simulate.callMethod('drag', [element, new JsObject.jsify(eventData)]);
       
   static dragEnd(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('dragEnd', [element, eventData]);
+      _Simulate.callMethod('dragEnd', [element, new JsObject.jsify(eventData)]);
       
   static dragEnter(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('dragEnter', [element, eventData]);
+      _Simulate.callMethod('dragEnter', [element, new JsObject.jsify(eventData)]);
 
   static dragExit(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('dragExit', [element, eventData]);
+      _Simulate.callMethod('dragExit', [element, new JsObject.jsify(eventData)]);
 
   static dragLeave(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('dragLeave', [element, eventData]);
+      _Simulate.callMethod('dragLeave', [element, new JsObject.jsify(eventData)]);
 
   static dragOver(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('dragOver', [element, eventData]);
+      _Simulate.callMethod('dragOver', [element, new JsObject.jsify(eventData)]);
 
   static dragStart(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('dragStart', [element, eventData]);
+      _Simulate.callMethod('dragStart', [element, new JsObject.jsify(eventData)]);
 
   static drop(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('drop', [element, eventData]);
+      _Simulate.callMethod('drop', [element, new JsObject.jsify(eventData)]);
 
   static focus(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('focus', [element, eventData]);
+      _Simulate.callMethod('focus', [element, new JsObject.jsify(eventData)]);
 
   static input(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('input', [element, eventData]);
+      _Simulate.callMethod('input', [element, new JsObject.jsify(eventData)]);
 
   static keyDown(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('keyDown', [element, eventData]);
+      _Simulate.callMethod('keyDown', [element, new JsObject.jsify(eventData)]);
 
   static keyPress(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('keyPress', [element, eventData]);
+      _Simulate.callMethod('keyPress', [element, new JsObject.jsify(eventData)]);
 
   static keyUp(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('keyUp', [element, eventData]);
+      _Simulate.callMethod('keyUp', [element, new JsObject.jsify(eventData)]);
 
   static mouseDown(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('mouseDown', [element, eventData]);
+      _Simulate.callMethod('mouseDown', [element, new JsObject.jsify(eventData)]);
 
   static mouseMove(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('mouseMove', [element, eventData]);
+      _Simulate.callMethod('mouseMove', [element, new JsObject.jsify(eventData)]);
 
   static mouseOut(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('mouseOut', [element, eventData]);
+      _Simulate.callMethod('mouseOut', [element, new JsObject.jsify(eventData)]);
 
   static mouseOver(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('mouseOver', [element, eventData]);
+      _Simulate.callMethod('mouseOver', [element, new JsObject.jsify(eventData)]);
 
   static mouseUp(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('mouseUp', [element, eventData]);
+      _Simulate.callMethod('mouseUp', [element, new JsObject.jsify(eventData)]);
 
   static paste(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('paste', [element, eventData]);
+      _Simulate.callMethod('paste', [element, new JsObject.jsify(eventData)]);
 
   static scroll(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('scroll', [element, eventData]);
+      _Simulate.callMethod('scroll', [element, new JsObject.jsify(eventData)]);
 
   static submit(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('submit', [element, eventData]);
+      _Simulate.callMethod('submit', [element, new JsObject.jsify(eventData)]);
 
   static touchCancel(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('touchCancel', [element, eventData]);
+      _Simulate.callMethod('touchCancel', [element, new JsObject.jsify(eventData)]);
 
   static touchEnd(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('touchEnd', [element, eventData]);
+      _Simulate.callMethod('touchEnd', [element, new JsObject.jsify(eventData)]);
 
   static touchMove(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('touchMove', [element, eventData]);
+      _Simulate.callMethod('touchMove', [element, new JsObject.jsify(eventData)]);
 
   static touchStart(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('touchStart', [element, eventData]);
+      _Simulate.callMethod('touchStart', [element, new JsObject.jsify(eventData)]);
 
   static wheel(JsObject element, [Map eventData = const{}]) =>
-      _Simulate.callMethod('wheel', [element, eventData]);
+      _Simulate.callMethod('wheel', [element, new JsObject.jsify(eventData)]);
 
 }
 
